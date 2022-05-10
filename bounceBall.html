@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>bounce Ball Animation</title>
+    <style>
+      .profile{
+        position: fixed;
+        height: 50px;
+        z-index: 2;
+        margin: 0;
+
+        left:10px;
+        top:10px;
+      }
+    </style>
+    <script>
+      window.onload = function() {
+        const G = 10; // gravitational constant
+        const R = 50; // radius
+        const W = 10; // weight
+        const TIME_INTERVAL = 33; // animation fps
+        const canvas = document.getElementById("mycanvas");
+        const ctx = canvas.getContext('2d');
+        const floor = 300; // floor top value
+
+        let ball = new Ball(310, 250, R, W); // make new ball object
+        
+        ball.setForceAsRandom(60,100).setColorAsRandom(50,255).setStartVelocity(); // set start value
+        
+        setInterval(drawFrame,TIME_INTERVAL); // run animation
+
+        console.log(ball);
+        function drawFrame(){
+          drawFloor();
+          ball.setVelocity(G).move().collisionWall().draw(ctx);   
+        }
+
+        function drawFloor(){ // draw floor function
+          ctx.fillStyle = 'rgb(255,255,255)';
+          ctx.fillRect(0,0,canvas.width,canvas.height);
+          ctx.fillStyle = 'rgb(200,200,200)';
+          ctx.fillRect(200,300,240,10);
+
+          ctx.beginPath();
+          ctx.moveTo(200,300);
+          ctx.lineTo(150,330);
+          ctx.lineTo(150,340);
+          ctx.lineTo(200,310);
+          ctx.fillStyle = 'rgb(180,180,180)';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(200,310);
+          ctx.lineTo(150,340);
+          ctx.lineTo(390,340);
+          ctx.lineTo(440,310);
+          ctx.fillStyle = 'rgb(130,130,130)';
+          ctx.fill();
+        }
+      }; 
+      
+      function Ball(x,y,r,m,f,v,color){ // Ball sturcture
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.m = m;
+        this.f = f; 
+        this.v = v;
+        this.color = color;
+      }
+
+      Ball.prototype = {
+        setForceAsRandom: function(minF, maxF){
+          this.f = Math.floor( minF + Math.random()*(maxF-minF));
+          return this;
+        },
+        setStartVelocity: function(){
+          this.v = this.f / this.m * -1 ;
+          return this;
+        },
+        setVelocity: function(g){
+          this.v = this.v + (g * 33 /1000);
+          return this;
+        },
+        setColorAsRandom: function(lmin,lmax){
+          let R = Math.floor(lmin+Math.random()*(lmax - lmin));
+          let G = Math.floor(lmin+Math.random()*(lmax - lmin));
+          let B = Math.floor(lmin+Math.random()*(lmax - lmin));
+          this.color = 'rgb('+R+','+B+','+G+')';
+          return this; 
+        },
+        draw: function(ctx){
+          ctx.fillStyle= this.color;
+          ctx.beginPath();
+          ctx.arc(this.x,this.y,this.r,0,2*Math.PI,true);
+          ctx.fill();
+          return this;
+        },
+        move: function(){
+          this.y += this.v;
+          return this;
+        },
+        collisionWall: function(){
+          if(this.y + this.r > 300){
+            this.y = 300 - this.r;
+            this.setForceAsRandom(60,100).setColorAsRandom(50,255).setStartVelocity();
+            if(this.v>0)this.v *= -1;
+          }
+          return this;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <a href="https://github.com/INOCCENT-Dev/MineSweeper"><img class = "profile" src = "ino.png"></a>
+    <canvas id = "mycanvas" width = 600 height = 400></canvas>
+  </body>
+</html>
