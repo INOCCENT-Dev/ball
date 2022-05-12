@@ -1,4 +1,4 @@
-# ball-animation
+# ball
 simple bouncing ball animation made with html canvas
 
 <h2>enjoy animation</h2>
